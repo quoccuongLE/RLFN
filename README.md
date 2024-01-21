@@ -6,6 +6,25 @@ Our team (ByteESR) won the **first place** in Runtime Track (Main Track) and the
 |  :----:  | :----:  |  :----:  | :----:  |  :----:  | :----:  |
 |  RLFN_ntire  | 27.11  |  0.317  | 19.70  |  80.05  | 377.91  |
 
+
+## Installation with Conda
+
+Requirements:
+
+  * Anaconda / Miniconda [(link)](https://www.anaconda.com/download)
+
+Run the script to install Conda environment
+```./setup.sh```
+
+## Download training dataset
+
+Requirements:
+
+  * gdown (already included in conda python packages (conda.yaml)) or manually download with ```pip install gdown```
+
+Run the script to download training dataset
+```./download_training_dataset.sh <path/to/dataset/folder>```
+
 ## Open-Source
 For commercial reasons, we don't release training code temporarily, please refer to [EDSR framework](https://github.com/sanghyun-son/EDSR-PyTorch) and our paper for details.
 - [x]  Paper of our method [[arXiv]](https://arxiv.org/abs/2205.07514)

@@ -8,6 +8,7 @@ import torch
 from utils import utils_logger
 from utils import utils_image as util
 from model.rlfn_ntire import RLFN_Prune
+import time
 
 
 def main():
@@ -20,7 +21,7 @@ def main():
     # --------------------------------
     # testsets = 'DIV2K 801-900'
     testsets = os.path.join(os.getcwd(), 'data')
-    testset_L = 'DIV2K_valid_LR_bicubic'
+    testset_L = 'DIV2K_test_LR'
 
     torch.cuda.current_device()
     torch.cuda.empty_cache()
@@ -45,7 +46,7 @@ def main():
     # --------------------------------
     # read image
     # --------------------------------
-    L_folder = os.path.join(testsets, testset_L, 'X4')
+    L_folder = os.path.join(testsets, testset_L)
     E_folder = os.path.join(testsets, testset_L+'_results')
     util.mkdir(E_folder)
 
@@ -81,12 +82,12 @@ def main():
         test_results['runtime'].append(start.elapsed_time(end))  # milliseconds
 
 
-#        torch.cuda.synchronize()
-#        start = time.time()
-#        img_E = model(img_L)
-#        torch.cuda.synchronize()
-#        end = time.time()
-#        test_results['runtime'].append(end-start)  # seconds
+        # torch.cuda.synchronize()
+        # start = time.time()
+        # img_E = model(img_L)
+        # torch.cuda.synchronize()
+        # end = time.time()
+        # test_results['runtime'].append(end-start)  # seconds
 
         # --------------------------------
         # (2) img_E
@@ -95,6 +96,7 @@ def main():
         img_E = util.tensor2uint(img_E)
 
         util.imsave(img_E, os.path.join(E_folder, img_name[:4]+ext))
+
     ave_runtime = sum(test_results['runtime']) / len(test_results['runtime']) / 1000.0
     logger.info('------> Average runtime of ({}) is : {:.6f} seconds'.format(L_folder, ave_runtime))
 
