@@ -571,7 +571,7 @@ def cubic(x):
 
 
 def calculate_weights_indices(
-    in_length: int, out_length: int, scale: float, kernel, kernel_width: int, antialiasing: bool
+    in_length: int, out_length: int, scale: float, kernel_type: str, kernel_width: int, antialiasing: bool
 ):
     if (scale < 1) and (antialiasing):
         # Use a modified kernel to simultaneously interpolate and antialias- larger kernel width
@@ -631,7 +631,9 @@ def calculate_weights_indices(
 # --------------------------------
 # imresize for tensor image
 # --------------------------------
-def imresize(img, scale, antialiasing=True):
+def imresize(
+    img: torch.Tensor, scale: float, antialiasing: bool = True, kernel_width: int = 4, kernel_type: str = "cubic"
+):
     # Now the scale should be the same for H and W
     # input: img: pytorch tensor, CHW or HW [0,1]
     # output: CHW or HW [0,1] w/o round
@@ -640,8 +642,6 @@ def imresize(img, scale, antialiasing=True):
         img.unsqueeze_(0)
     in_C, in_H, in_W = img.size()
     out_C, out_H, out_W = in_C, math.ceil(in_H * scale), math.ceil(in_W * scale)
-    kernel_width = 4
-    kernel = "cubic"
 
     # Return the desired dimension order for performing the resize.  The
     # strategy is to perform the resize first along the dimension with the
@@ -650,10 +650,20 @@ def imresize(img, scale, antialiasing=True):
 
     # get weights and indices
     weights_H, indices_H, sym_len_Hs, sym_len_He = calculate_weights_indices(
-        in_H, out_H, scale, kernel, kernel_width, antialiasing
+        in_length=in_H,
+        out_length=out_H,
+        scale=scale,
+        kernel_type=kernel_type,
+        kernel_width=kernel_width,
+        antialiasing=antialiasing,
     )
     weights_W, indices_W, sym_len_Ws, sym_len_We = calculate_weights_indices(
-        in_W, out_W, scale, kernel, kernel_width, antialiasing
+        in_length=in_W,
+        out_length=out_W,
+        scale=scale,
+        kernel_type=kernel_type,
+        kernel_width=kernel_width,
+        antialiasing=antialiasing,
     )
     # process H dimension
     # symmetric copying
@@ -706,7 +716,9 @@ def imresize(img, scale, antialiasing=True):
 # --------------------------------
 # imresize for numpy image
 # --------------------------------
-def imresize_np(img, scale, antialiasing=True):
+def imresize_np(
+    img: np.ndarray, scale: float, antialiasing: bool = True, kernel_width: int = 4, kernel_type: str = "cubic"
+):
     # Now the scale should be the same for H and W
     # input: img: Numpy, HWC or HW [0,1]
     # output: HWC or HW [0,1] w/o round
@@ -717,8 +729,6 @@ def imresize_np(img, scale, antialiasing=True):
 
     in_H, in_W, in_C = img.size()
     out_C, out_H, out_W = in_C, math.ceil(in_H * scale), math.ceil(in_W * scale)
-    kernel_width = 4
-    kernel = "cubic"
 
     # Return the desired dimension order for performing the resize.  The
     # strategy is to perform the resize first along the dimension with the
@@ -727,10 +737,20 @@ def imresize_np(img, scale, antialiasing=True):
 
     # get weights and indices
     weights_H, indices_H, sym_len_Hs, sym_len_He = calculate_weights_indices(
-        in_H, out_H, scale, kernel, kernel_width, antialiasing
+        in_length=in_H,
+        out_length=out_H,
+        scale=scale,
+        kernel_type=kernel_type,
+        kernel_width=kernel_width,
+        antialiasing=antialiasing,
     )
     weights_W, indices_W, sym_len_Ws, sym_len_We = calculate_weights_indices(
-        in_W, out_W, scale, kernel, kernel_width, antialiasing
+        in_length=in_W,
+        out_length=out_W,
+        scale=scale,
+        kernel_type=kernel_type,
+        kernel_width=kernel_width,
+        antialiasing=antialiasing,
     )
     # process H dimension
     # symmetric copying
